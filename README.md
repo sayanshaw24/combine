@@ -2,9 +2,9 @@
 Combining Microsoft's Bing Chat and Bing Image Creator capabilities to automate design creation.
 
 <p align="center">
-  <img alt="Light" src="./examples/xbox/0.jpeg" width="33%">
-  <img alt="Dark" src="./examples/onnxruntime/0.jpeg" width="33%">
-  <img alt="Dark" src="./examples/iphone/3.jpeg" width="33%">
+  <img alt="Light" src="./examples/xbox/0.jpeg" width="24%">
+  <img alt="Dark" src="./examples/onnxruntime/0.jpeg" width="24%">
+  <img alt="Dark" src="./examples/iphone/3.jpeg" width="24%">
 </p>
 <sub>powered by Bing Chat, Bing Image Creator, and EdgeGPT</sub>
 
