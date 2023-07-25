@@ -1,25 +1,9 @@
-# from EdgeGPT.EdgeUtils import Query, Cookie, ImageQuery
-# from pathlib import Path
+#This script leverages cloud compute on Azure for lighting fast design powered by state-of-the-art
+# machine learning models for text generation and image creation with ChatGPT and DALL-E using Microsoft's
+# Bing Chat and Bing Image Creator.
 
-# # Clean images folder
-# try:
-#     shutil.rmtree("/bing_images")
-# except OSError as e:
-#     print("Error: %s - %s." % (e.filename, e.strerror))
+# Usage: python create.py --cookie-file "./bing_cookies_chat.json" --prompt "product to create design for"
 
-# product = "onnxruntime"
-# prompt = f"describe {product} without saying {product}"
-
-# q = Query(
-#   prompt,
-#   style="creative",  # or: 'balanced', 'precise'
-#   cookie_files=["./bing_cookies_chat.json"]
-# )
-# print(q)
-# i = ImageQuery(
-#   str(q),
-#   cookie_files=["./bing_cookies_chat.json"]
-# )
 from EdgeGPT.EdgeGPT import Chatbot, ConversationStyle
 from EdgeGPT.ImageGen import ImageGen
 
@@ -39,15 +23,16 @@ import textwrap
 import cv2
 import numpy as np
 
+# Ask Bing Chat
 async def chat(args, prompt):
     cookies = json.loads(open(args.cookie_file, encoding="utf-8").read())
     bot = await Chatbot.create(cookies=cookies)
     response = await bot.ask(prompt=prompt, conversation_style=ConversationStyle.creative, simplify_response=True)
-    #print(json.dumps(response, indent=2))
     output_text = response["text"]
     await bot.close()
     return output_text
 
+# Text on image
 def draw_multiple_line_text(image, text, font, text_color, text_start_height):
     draw = ImageDraw.Draw(image)
     image_width, image_height = image.size
@@ -66,6 +51,7 @@ if __name__ == "__main__":
     except OSError as e:
         print("NOTE - No output folder to clean: %s - %s." % (e.filename, e.strerror))
 
+    # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-U", help="Auth cookie from browser", type=str)
     parser.add_argument("--cookie-file", help="File containing auth cookie", type=str)
@@ -96,7 +82,9 @@ if __name__ == "__main__":
     if args.U is None:
         raise Exception("Could not find auth cookie")
 
-    # Ask Chat
+    # Note: we keep pinging Bing until successful return as there might be Captcha checks or other HTTP issues.
+    # IMPORTANT - do not make changes here unless you are sure there will not be errors as the code blocks are
+    # within "while True" blocks. Change the try-except blocks as needed to test.
     while True:
         try:
             description = asyncio.run(chat(args, f"give me a 10 word generic description of {args.prompt} without saying {args.prompt}"))
